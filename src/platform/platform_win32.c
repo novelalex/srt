@@ -13,7 +13,6 @@ global LARGE_INTEGER win32_time_perf_frequency;
 global LARGE_INTEGER win32_time_perf_start;
 global b32           win32_time_initialized = false;
 
-
 // MEMORY ---------------------------------------------------
 
 internal DWORD win32_memory_map_protection(u32 flags)  {
