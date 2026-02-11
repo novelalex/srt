@@ -1,8 +1,6 @@
 #include "platform/platform.c"
 #include "base/base.c"
 
-#include <string.h>
-
 // ENTRYPOINT --------------------------------------------
 
 int main(int argc, char** argv) {
@@ -37,21 +35,9 @@ int main(int argc, char** argv) {
     platform_debug_print("w:%d\n", *w);
     platform_debug_print("x:%d\n\n", *x);
 
+    nb_arena_clear(arena);
     nb_arena_destroy(arena);
     arena = null;
-
-    const char* text = "Hello world";
-    usize len = strlen(text);
-
-    void* buffer = nb_aligned_allocate(len + 1, 1);
-    memcpy(buffer, text, len);
-
-    PlatformFile* f = platform_file_open("helo.txt");
-    platform_file_write(f, buffer, len);
-
-    platform_file_close(f);
-
-    nb_aligned_free(buffer, len + 1, 1);
 }
 
 
