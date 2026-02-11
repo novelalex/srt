@@ -1,7 +1,7 @@
 #ifndef PLATFORM_H_
 #define PLATFORM_H_
 
-#include "../common/common.h"
+#include "../common.h"
 
 // MEMORY -------------------------------------------------------
 
