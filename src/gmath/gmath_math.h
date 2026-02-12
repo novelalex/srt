@@ -12,6 +12,10 @@ static inline f32 gm_abs(f32 x) {
   return fabsf(x);
 }
 
+static inline bool gm_approx_eq(f32 a, f32 b) {
+  return (gm_abs(a - b) <= NB_EPSILON_F);
+}
+
 static inline f32 gm_floor(f32 x) {
   return floorf(x);
 }

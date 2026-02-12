@@ -169,5 +169,6 @@ typedef i32 b32;
 
 #define NB_MIN(a, b) ((a) < (b) ? (a) : (b))
 #define NB_MAX(a, b) ((a) > (b) ? (a) : (b))
+#define NB_EPSILON_F 1e-6 
 
 #endif // COMMON_H

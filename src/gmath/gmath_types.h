@@ -35,7 +35,7 @@ typedef struct Matrix4 {
 
 typedef struct QuadraticSolution {
     usize count;
-    f32 solutions[3];
+    f32 solutions[2];
 } QuadraticSolution;
 
 typedef struct Ray {
