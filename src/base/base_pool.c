@@ -44,10 +44,59 @@ Pool* nb_pool_create_aligned(Arena *a, usize size,  usize count, usize align) {
 }
 
 void* nb_pool_alloc(Pool* pool) {
+    void* allocated = null;
+    if (pool->free_list_head == null) {
+        // TODO:(Novel) Log error here
+        return null; 
+    }
+    allocated = pool->free_list_head;
+    pool->free_list_head = *((void**)(pool->free_list_head));
 
+    pool->used_size += pool->object_size;
+    pool->peak_size = NB_MAX(pool->peak_size, pool->used_size);
+
+    return allocated;
 }
-void        nb_pool_clear(Pool* pool);
-void        nb_pool_free(Pool* pool, void* ptr);
 
-usize       nb_pool_used_memory(Pool* pool);
-usize       nb_pool_peak_memory(Pool* pool);
+internal b32 nb_pool_validate_ptr(Pool* pool, void* ptr) {
+    if (ptr == null) {
+        // TODO:(Novel) Logging
+        return false;
+    }
+
+    uptr ptr_to_check = (uptr)ptr;
+
+    uptr start_buf = (uptr)pool->mem;
+    uptr end_buf = start_buf + pool->size;
+    b32 is_ptr_in_buf = (ptr_to_check >= start_buf) &&
+        (ptr_to_check < end_buf);
+    
+    ptrdiff offset = ptr_to_check - start_buf;
+    b32 isPtrAlligned =
+        (offset % pool->object_size) == 0;
+
+    return is_ptr_in_buf && isPtrAlligned;
+}  
+
+
+void nb_pool_free(Pool* pool, void* ptr) {
+    #ifdef NB_BUILD_DEBUG
+        // For debug builds we can take some time to check if
+        // the free is valid.
+        NB_ASSERT_MSG(nb_pool_validate_ptr(pool, ptr),
+            "Pool Allocator: Invalid pointer free");
+    #endif
+
+    // Make the freed object the head of the free ptr list
+    *(uptr*)ptr = (uptr)(pool->free_list_head);
+    pool->free_list_head = ptr;
+
+    pool->used_size -= pool->object_size;
+}
+
+usize nb_pool_used_memory(Pool* pool) {
+    return pool->used_size;
+}
+usize nb_pool_peak_memory(Pool* pool) {
+    return pool->peak_size;
+}

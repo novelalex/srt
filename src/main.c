@@ -4,17 +4,24 @@
 // ENTRYPOINT --------------------------------------------
 
 int main(int argc, char** argv) {
-    Arena* arena = nb_arena_create(null, sizeof(u8)*2048);
+    Arena* arena = nb_arena_create(null, 1024*1024);
     platform_debug_print("Program arena peak usage: %d bytes\n", nb_arena_peak_memory(arena));
-    Hashtable* t = nb_hashtable_create(arena);
-    nb_hashtable_set(t, arena, "novel", (void*)21);
-    nb_hashtable_set(t, arena, "adriel", (void*)22);
-    platform_debug_print("Program arena peak usage: %d bytes\n", nb_arena_peak_memory(arena));
+ 
+    Pool* p = nb_pool_create(arena, sizeof(u64), 1000);
 
-    platform_debug_print("Novel's age: %d\n", (u64)(nb_hashtable_get(t, "novel")));
-    platform_debug_print("Adriel's age: %d\n", (u64)(nb_hashtable_get(t, "adriel")));
+    u64* n1 = nb_pool_alloc(p);
+    u64* n2 = nb_pool_alloc(p);
+    u64* n3 = nb_pool_alloc(p);
+    platform_debug_print("pool usage: %d bytes\n", nb_pool_used_memory(p));
+    u64* n4 = nb_pool_alloc(p);
+    platform_debug_print("pool usage: %d bytes\n", nb_pool_used_memory(p));
+    nb_pool_free(p, n1);
+    nb_pool_free(p, n2);
+    platform_debug_print("pool usage: %d bytes\n", nb_pool_used_memory(p));
+    platform_debug_print("pool peak usage: %d bytes\n", nb_pool_peak_memory(p));
 
-    nb_arena_clear(arena);
+
+
     platform_debug_print("Program arena peak usage: %d bytes\n", nb_arena_peak_memory(arena));
     nb_arena_destroy(arena);
     arena = null;

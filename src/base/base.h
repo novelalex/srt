@@ -40,7 +40,6 @@ Pool*       nb_pool_create(Arena *a, usize size, usize count);
 Pool*       nb_pool_create_aligned(Arena *a, usize size, usize count, usize align);
 
 void*       nb_pool_alloc(Pool* pool);  
-void        nb_pool_clear(Pool* pool);
 void        nb_pool_free(Pool* pool, void* ptr);
 
 usize       nb_pool_used_memory(Pool* pool);
