@@ -63,33 +63,40 @@ struct Arena {
     usize marker;
     usize size;
     usize peak_size;
+    b32   is_platform_allocated;
 };
 
-Arena* nb_arena_create(usize size) {
+Arena* nb_arena_create(Arena* parent, usize size) {
+    void* mem; // ptr to arena struct + backing buffer 
     usize total_size = sizeof(Arena) + size;
-    void* mem = platform_memory_reserve(total_size);
-    if (!mem) {
-        return null;
+    if (parent) {
+        mem = nb_arena_alloc(parent, total_size);
+    } else {
+        mem = platform_memory_reserve(total_size);
+        if (!mem) {
+            return null;
+        }
+        platform_memory_commit(mem, total_size);
     }
-    platform_memory_commit(mem, total_size);
 
     Arena* arena = (Arena*)mem;
     arena->mem = (u8*)mem + sizeof(Arena);
     arena->marker = 0;
     arena->size = size;
     arena->peak_size = 0;
+    arena->is_platform_allocated = !parent;
 
     return arena;
     
 }
 
 void nb_arena_destroy(Arena* arena) {
-    usize total_size = sizeof(Arena) + arena->size;
-    platform_memory_decommit(arena, total_size);
-    platform_memory_release(arena, total_size);
+    if (arena->is_platform_allocated) {
+        usize total_size = sizeof(Arena) + arena->size;
+        platform_memory_decommit(arena, total_size);
+        platform_memory_release(arena, total_size);
+    }
 }
-
-
 
 void* nb_arena_alloc_alligned(Arena* arena, usize size, usize align) {
     uptr base = (uptr)arena->mem;

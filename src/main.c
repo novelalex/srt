@@ -4,7 +4,7 @@
 // ENTRYPOINT --------------------------------------------
 
 int main(int argc, char** argv) {
-    Arena* arena = nb_arena_create(sizeof(u8)*2048);
+    Arena* arena = nb_arena_create(null, sizeof(u8)*2048);
     platform_debug_print("Program arena peak usage: %d bytes\n", nb_arena_peak_memory(arena));
     Hashtable* t = nb_hashtable_create(arena);
     nb_hashtable_set(t, arena, "novel", (void*)21);

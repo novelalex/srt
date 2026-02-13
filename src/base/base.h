@@ -17,7 +17,10 @@ void    nb_aligned_free(void* ptr, usize size, usize align);
 
 typedef struct Arena Arena;
 
-Arena*      nb_arena_create(usize size);
+// If parent arena is null this will use platform's allocator
+Arena*      nb_arena_create(Arena* parent, usize size);
+
+// This is safe to call on non platform allocated arenas
 void        nb_arena_destroy(Arena* arena);
 
 void*       nb_arena_alloc(Arena* arena, usize size);
@@ -33,6 +36,15 @@ usize       nb_arena_peak_memory(Arena* arena);
 
 typedef struct Pool Pool;
 
+Pool*       nb_pool_create(Arena *a, usize size, usize count);
+Pool*       nb_pool_create_aligned(Arena *a, usize size, usize count, usize align);
+
+void*       nb_pool_alloc(Pool* pool);  
+void        nb_pool_clear(Pool* pool);
+void        nb_pool_free(Pool* pool, void* ptr);
+
+usize       nb_pool_used_memory(Pool* pool);
+usize       nb_pool_peak_memory(Pool* pool);
 
 // Hashtable -----------------------------------------------------------
 
