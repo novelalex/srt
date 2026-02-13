@@ -5,39 +5,17 @@
 
 int main(int argc, char** argv) {
     Arena* arena = nb_arena_create(sizeof(u8)*2048);
+    platform_debug_print("Program arena peak usage: %d bytes\n", nb_arena_peak_memory(arena));
+    Hashtable* t = nb_hashtable_create(arena);
+    nb_hashtable_set(t, arena, "novel", (void*)21);
+    nb_hashtable_set(t, arena, "adriel", (void*)22);
+    platform_debug_print("Program arena peak usage: %d bytes\n", nb_arena_peak_memory(arena));
 
-    int* x = nb_arena_alloc(arena, sizeof(int));
-    *x = 67;
-
-    platform_debug_print("x:%d\n\n", *x);
-
-    usize marker = nb_arena_get_marker(arena);
-
-    int* y = nb_arena_alloc(arena, sizeof(int));
-    *y = 89;
-
-    platform_debug_print("y:%d\n\n", *y);
-
-    nb_arena_free_to_marker(arena, marker);
-
-    int* z = nb_arena_alloc(arena, sizeof(int));
-    *z = 100;
-
-    platform_debug_print("z:%d\n", *z);
-    platform_debug_print("y:%d\n\n", *y);
-
+    platform_debug_print("Novel's age: %d\n", (u64)(nb_hashtable_get(t, "novel")));
+    platform_debug_print("Adriel's age: %d\n", (u64)(nb_hashtable_get(t, "adriel")));
 
     nb_arena_clear(arena);
-
-    int* w = nb_arena_alloc(arena, sizeof(int));
-    *w = 12;
-
-    platform_debug_print("w:%d\n", *w);
-    platform_debug_print("x:%d\n\n", *x);
-
-    nb_arena_clear(arena);
+    platform_debug_print("Program arena peak usage: %d bytes\n", nb_arena_peak_memory(arena));
     nb_arena_destroy(arena);
     arena = null;
 }
-
-

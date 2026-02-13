@@ -29,6 +29,11 @@ void        nb_arena_free_to_marker(Arena* arena, usize marker);
 usize       nb_arena_used_memory(Arena* arena);
 usize       nb_arena_peak_memory(Arena* arena);
 
+// Pool Allocator ------------------------------------------------------
+
+typedef struct Pool Pool;
+
+
 // Hashtable -----------------------------------------------------------
 
 typedef struct Hashtable Hashtable;
