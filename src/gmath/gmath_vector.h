@@ -302,4 +302,5 @@ static inline bool gm_equal4(Vector4 a, Vector4 b, f32 epsilon) {
 }
 
 
+
 #endif // GMATH_VECTOR_H_

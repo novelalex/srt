@@ -89,7 +89,9 @@ void nb_arena_destroy(Arena* arena) {
     platform_memory_release(arena, total_size);
 }
 
-void* nb_arena_allocate(Arena* arena, usize size, usize align) {
+
+
+void* nb_arena_alloc_alligned(Arena* arena, usize size, usize align) {
     uptr base = (uptr)arena->mem;
     uptr current = base + arena->marker;
     uptr aligned = nb_align_address(current, align);
@@ -113,6 +115,10 @@ void* nb_arena_allocate(Arena* arena, usize size, usize align) {
     arena->peak_size = NB_MAX(arena->peak_size, arena->marker);
 
     return (void*)aligned;
+}
+
+void* nb_arena_alloc(Arena* arena, usize size) {
+    return nb_arena_alloc_alligned(arena,size, NB_DEFAULT_ALIGNMENT);
 }
 
 void nb_arena_clear(Arena* arena) {

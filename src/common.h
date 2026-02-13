@@ -83,6 +83,8 @@ typedef i32 b32;
 #define NB_ALIGNMENT _Alignof(max_align_t)
 #endif
 
+#define NB_DEFAULT_ALIGNMENT NB_ALIGNMENT
+
 // Compiler detection
 #if defined(_MSC_VER)
 #define NB_COMPILER_MSVC 1
